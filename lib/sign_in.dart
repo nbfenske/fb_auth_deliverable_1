@@ -10,6 +10,8 @@ String name;
 String email;
 String imageUrl;
 
+// Author: Nathan Fenske
+// Implements signing into Google via the Firebase module
 Future<String> signInWithGoogle() async {
   await Firebase.initializeApp();
 
@@ -50,6 +52,9 @@ Future<String> signInWithGoogle() async {
 
   return null;
 }
+
+// Author: Nathan Fenske
+// Implements signing out of Google via the Firebase module
 void signOutGoogle() async{
   await googleSignIn.signOut();
 

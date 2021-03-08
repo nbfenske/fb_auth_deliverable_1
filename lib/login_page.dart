@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'sign_in.dart';
 import 'main.dart';
 
+// Author: Nathan Fenske
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
+// Author: Nathan Fenske
+// Constructs our "first screen", the screen which opens upon launching the application
+// This contains the loginpage and the signin button defined below
 class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -87,6 +91,8 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
+// Author: Nathan Fenske
+// Defines the structure of our main login page
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
@@ -110,7 +116,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-
+  // Author: Nathan Fenske
+  // Defines the structure and behavior of the sign-in button
   Widget _signInButton() {
     return OutlineButton(
       splashColor: Colors.grey,

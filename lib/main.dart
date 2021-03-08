@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'login_page.dart';
 
+// Author: Timothy Nkata
 //Holidays for later use:
 final Map<DateTime, List> _holidays = {
   DateTime(2021, 1, 1): ['New Year\'s Day'],
@@ -18,6 +19,9 @@ void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
+// Author: Nathan Fenske
+// Defines what should be loaded upon launching the application
+// In this case we open to the login page
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Calendar shit
+// Author: Timothy Nkata
+// Calendar homepage
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -41,6 +46,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+// Author: Timothy Nkata
+// Constructs and defines behavior for our main calendar view,
+// including switching to and from month/week/day views
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Map<DateTime, List> _events;
   List _selectedEvents;
@@ -124,6 +132,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // Author: Timothy Nkata
+  // Display events based on day selected within calendar
   void _onDaySelected(DateTime day, List events, List holidays) {
     print('CALLBACK: _onDaySelected');
     setState(() {
@@ -131,16 +141,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
+  // Author: Timothy Nkata
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
+  // Author: Timothy Nkata
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onCalendarCreated');
   }
 
+  // Author: Timothy Nkata
+  // Constructs the main calendar view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,6 +177,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar() {
     return TableCalendar(
@@ -190,6 +205,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -282,6 +298,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
+  // Builds the markers to indicate events exist on a given date in the calendar
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -315,6 +333,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
+  // Builds the buttons which display underneath the calendar view for daterange selection
   Widget _buildButtons() {
     final dateTime = _events.keys.elementAt(_events.length - 2);
 
@@ -366,6 +386,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
+  // Builds the list of events associate with a given day
+  // Create upon selecting a given day on the calendar
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
