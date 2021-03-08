@@ -8,7 +8,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-// Author: Nathan Fenske
+// Author: Nathan Fenske + Konstantinos Chrysolous
 // Constructs our "first screen", the screen which opens upon launching the application
 // This contains the loginpage and the signin button defined below
 class FirstScreen extends StatelessWidget {
@@ -91,7 +91,7 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
-// Author: Nathan Fenske
+// Author: Nathan Fenske + Konstantinos Chrysolous
 // Defines the structure of our main login page
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-  // Author: Nathan Fenske
+  // Author: Nathan Fenske + Konstantinos Chrysolous
   // Defines the structure and behavior of the sign-in button
   Widget _signInButton() {
     return OutlineButton(
