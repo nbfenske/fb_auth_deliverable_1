@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'login_page.dart';
+import 'class_display.dart';
 
 // Author: Timothy Nkata
 //Holidays for later use:
@@ -401,7 +402,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         child: ListTile(
           title: Text(event.toString()),
-          onTap: () => print('$event tapped!'),
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ClassScreen(title: '$event');
+                  },
+                )
+            );
+          },
         ),
       ))
           .toList(),
