@@ -9,8 +9,8 @@ class LoginPage extends StatefulWidget {
 }
 
 // Author: Nathan Fenske + Konstantinos Chrysolous
-// Constructs our "first screen", the screen which opens upon launching the application
-// This contains the loginpage and the signin button defined below
+// Constructs a "first screen" which is no longer being used, this was simply to test
+// that we are returning the appropriate information from Google sign-in
 class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,11 @@
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+//final firebaseInstance = FirebaseFirestore.instance;
 
 // retrieved from the FirebaseUser
 String name;
@@ -46,12 +48,16 @@ Future<String> signInWithGoogle() async {
     }
 
     print('signInWithGoogle succeeded: $user');
-
+    //var document = await firebaseInstance.collection('users').document(user.uid).get();
+    //var doc = await document;
+    //print(doc.data());
     return '$user';
   }
 
   return null;
 }
+
+
 
 // Author: Nathan Fenske
 // Implements signing out of Google via the Firebase module

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'sign_in.dart';
 
 import 'login_page.dart';
 import 'class_display.dart';
@@ -36,8 +37,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Author: Timothy Nkata
-// Calendar homepage
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -47,11 +46,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-// Author: Timothy Nkata
-// Constructs and defines behavior for our main calendar view,
-// including switching to and from month/week/day views
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Map<DateTime, List> _events;
+  TextEditingController _eventController;
   List _selectedEvents;
   AnimationController _animationController;
   CalendarController _calendarController;
@@ -59,63 +56,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _eventController = TextEditingController();
     final _selectedDay = DateTime.now();
 
+
     _events = {
-      _selectedDay.subtract(Duration(days: 30)): [
+      /*_selectedDay.add(Duration(days: 1)): [
         'Class 1',
         'Class 2',
         'Class 3'
-      ],
-      _selectedDay.subtract(Duration(days: 27)): ['Class A1'],
-      _selectedDay.subtract(Duration(days: 20)): [
-        'Class A2',
-        'Class B2',
-        'Class C2',
-        'Class D2'
-      ],
-      _selectedDay.subtract(Duration(days: 16)): ['Class A3', 'Class B3'],
-      _selectedDay.subtract(Duration(days: 10)): [
-        'Class A4',
-        'Class B4',
-        'Class C4'
-      ],
-      _selectedDay.subtract(Duration(days: 4)): [
-        'Class A5',
-        'Class B5',
-        'Class C5'
-      ],
-      _selectedDay.subtract(Duration(days: 2)): ['Class A6', 'Class B6'],
-      _selectedDay: ['Class A7', 'Class B7', 'Class C7', 'Class D7'],
-      _selectedDay.add(Duration(days: 1)): [
-        'Class A8',
-        'Class B8',
-        'Class C8',
-        'Class D8'
-      ],
-      _selectedDay.add(Duration(days: 3)):
-      Set.from(['Class A9', 'Class A9', 'Class B9']).toList(),
-      _selectedDay.add(Duration(days: 7)): [
-        'Class A10',
-        'Class B10',
-        'Class C10'
-      ],
-      _selectedDay.add(Duration(days: 11)): ['Event A11', 'Event B11'],
-      _selectedDay.add(Duration(days: 17)): [
-        'Class A12',
-        'Class B12',
-        'Class C12',
-        'Class D12'
-      ],
-      _selectedDay.add(Duration(days: 22)): ['Class A13', 'Class B13'],
-      _selectedDay.add(Duration(days: 26)): [
-        'Class A14',
-        'Class B14',
-        'Class C14'
-      ],
+      ],*/
+      DateTime.utc(2021, 12, 25): ['Christmas'],
+      DateTime.utc(2021, 12, 25).subtract(Duration(days: 1)): ['Christmas Eve'],
+      /*_selectedDay: ['Class A7', 'Class B7', 'Class C7', 'Class D7'],*/
+
     };
 
-    _selectedEvents = _events[_selectedDay] ?? [];
+    _selectedEvents = [];
     _calendarController = CalendarController();
 
     _animationController = AnimationController(
@@ -133,8 +90,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // Author: Timothy Nkata
-  // Display events based on day selected within calendar
   void _onDaySelected(DateTime day, List events, List holidays) {
     print('CALLBACK: _onDaySelected');
     setState(() {
@@ -142,45 +97,126 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
-  // Author: Timothy Nkata
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
-  // Author: Timothy Nkata
   void _onCalendarCreated(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onCalendarCreated');
   }
 
-  // Author: Timothy Nkata
-  // Constructs the main calendar view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          // Switch out 2 lines below to play with TableCalendar's settings
-          //-----------------------
-          _buildTableCalendar(),
-          // _buildTableCalendarWithBuilders(),
-          const SizedBox(height: 8.0),
-          _buildButtons(),
-          const SizedBox(height: 8.0),
-          Expanded(child: _buildEventList()),
-        ],
-      ),
+        appBar: AppBar(
+          leading: TextButton(
+            child: Text("Log Out"),
+            onPressed: () {
+              signOutGoogle();
+              Navigator.pop(context);
+            },
+            style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.resolveWith(
+                        (state) => Colors.white)),
+
+          ),
+          //Update. Code to delete a class, by Tim.
+          actions: [
+
+            /*IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () async{
+                final confirm = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text("Warning"),
+                    content: Text("Deletes the most recent class added to the current date selected. Are you sure?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedEvents.removeAt(_selectedEvents.length - 1);
+                          });
+                          Navigator.pop(context, false);
+                        },
+                        child: Text("Delete"),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: Text("Cancel", style: TextStyle(color: Colors.grey.shade700),),
+                      ),
+                    ],
+                  ),
+                ) ?? false;
+                if(confirm){
+                  //pop and delete the event
+                  Navigator.pop(context);
+                }
+              },
+            )*/
+          ],
+          title: Text(widget.title),
+        ),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            // Switch out 2 lines below to play with TableCalendar's settings
+            //-----------------------
+            _buildTableCalendar(
+            ),
+            // _buildTableCalendarWithBuilders(),
+            const SizedBox(height: 8.0),
+            _buildButtons(),
+            const SizedBox(height: 8.0),
+            Expanded(child: _buildEventList()),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: (){
+
+            _showAddDialog();
+            _buildEventList();
+          },
+        )
     );
   }
+//Recent update to add a class. By Timothy N.
+  _showAddDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Add Course to Selected Date"),
+          content: TextField(
+            controller: _eventController,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Add"),
+              onPressed: (){
+                if(_eventController.text.isEmpty) return;
+                setState(() {
+                  if(_events[_calendarController.selectedDay] != null){
+                    _events[_calendarController.selectedDay].add(_eventController.text);
+                    print(_events[_calendarController.selectedDay]);
+                  } else {
+                    _events[_calendarController.selectedDay] = [_eventController.text];
+                  }
+                  _eventController.clear();
+                  Navigator.pop(context);
+                });
+              },
+            )
+          ],
+        )
+    );
 
-  // Author: Timothy Nkata
+  }
+
   // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
+  Widget _buildTableCalendar({Map<DateTime, List> events}) {
     return TableCalendar(
       calendarController: _calendarController,
       events: _events,
@@ -206,7 +242,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Author: Timothy Nkata
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -299,8 +334,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Author: Timothy Nkata
-  // Builds the markers to indicate events exist on a given date in the calendar
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -326,6 +359,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+
   Widget _buildHolidaysMarker() {
     return Icon(
       Icons.add_box,
@@ -334,8 +368,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Author: Timothy Nkata
-  // Builds the buttons which display underneath the calendar view for daterange selection
   Widget _buildButtons() {
     final dateTime = _events.keys.elementAt(_events.length - 2);
 
@@ -387,9 +419,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Author: Timothy Nkata
-  // Builds the list of events associate with a given day
-  // Create upon selecting a given day on the calendar
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
@@ -402,7 +431,39 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         child: ListTile(
           title: Text(event.toString()),
+          trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () async{
+              final confirm = await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text("Warning"),
+                  content: Text("This class will be deleted forever. Are you sure?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedEvents.removeAt(_selectedEvents.indexOf('$event'));
+                        });
+                        Navigator.pop(context, false);
+                      },
+                      child: Text("Delete"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text("Cancel", style: TextStyle(color: Colors.grey.shade700),),
+                    ),
+                  ],
+                ),
+              ) ?? false;
+              if(confirm){
+                //pop and delete the event
+                Navigator.pop(context);
+              }
+            },
+          ),
           onTap: () {
+            print('$event tapped');
             Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) {
