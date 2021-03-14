@@ -3,7 +3,7 @@
 As part of our main project for our CIS 454: Software Implementation course at Syracuse University, taught by Prof. Chilukuri K. Mohan
 
 An in-progress Flutter Android application which will allow university students to easily manage their classes
-in a calendar application centered around college life. Special feature *will* include options to add external links like Zoom classes,
+in a calendar application centered around college life. Special features *will* include options to add external links like Zoom classes,
 notifications for when a class or call is upcoming, and the ability to add office hours.
 
 All of the code which we actually wrote for this project (i.e. not generated simply by creating a new flutter app) are contained inside
