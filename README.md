@@ -9,9 +9,9 @@ of the lib folder. If you are unfamiliar with the structure of Flutter applicati
 see the main screen/code for this application.
 
 ## Authors
-Nathan Fenske
-Timothy Nkata
-Konstantinos Chrysoulous
-Gaeun Lee
-Kelvin Chen
-Jonathan Deiss
+Nathan Fenske, 
+Timothy Nkata, 
+Konstantinos Chrysoulous, 
+Gaeun Lee, 
+Kelvin Chen, 
+and Jonathan Deiss
