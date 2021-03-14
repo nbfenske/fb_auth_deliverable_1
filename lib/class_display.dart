@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Author: Nathan Fenske
+// This is the class to represent the screen opened after clicking on an event/class
 class ClassScreen extends StatefulWidget {
   ClassScreen({Key key, this.title}) : super(key: key);
 
@@ -18,6 +20,8 @@ class ClassScreen extends StatefulWidget {
   _ClassScreen createState() => _ClassScreen();
 }
 
+// Author: Nathan Fenske
+// Still the representation of the class on-tap screen, just defines the state/structure
 class _ClassScreen extends State<ClassScreen> {
 
   @override
@@ -32,7 +36,7 @@ class _ClassScreen extends State<ClassScreen> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title), // Title set to the given class/event
       ),
     );
   }

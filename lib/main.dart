@@ -7,7 +7,7 @@ import 'login_page.dart';
 import 'class_display.dart';
 
 // Author: Timothy Nkata
-//Holidays for later use:
+// Holidays for later use
 final Map<DateTime, List> _holidays = {
   DateTime(2021, 1, 1): ['New Year\'s Day'],
   DateTime(2021, 1, 6): ['Epiphany'],
@@ -23,7 +23,7 @@ void main() {
 
 // Author: Nathan Fenske
 // Defines what should be loaded upon launching the application
-// In this case we open to the login page
+// In this case we open to the login (google sign-in) page
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: LoginPage(), // home refers to the page, our google sign-in page, to be initally shown
     );
   }
 }
@@ -107,15 +107,19 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     print('CALLBACK: _onCalendarCreated');
   }
 
+  // Author: Timothy Nkata
+  // Defines the structure of the calendar view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: AppBar( // Top bar of the calendar screen
           leading: TextButton(
+            // Author: Nathan Fenske
+            // Logout button on the top left, signs out of google
             child: Text("Log Out"),
             onPressed: () {
               signOutGoogle();
-              Navigator.pop(context);
+              Navigator.pop(context); // pop context just means go back to the previous screen (google sign-in)
             },
             style: ButtonStyle(
                 foregroundColor: MaterialStateProperty.resolveWith(
@@ -124,7 +128,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           //Update. Code to delete a class, by Tim.
           actions: [
-
+            // Old code for the delete button, moved to the buildEventList function
+            // so we have delete buttons for every class (not just the overall context)
             /*IconButton(
               icon: Icon(Icons.delete),
               onPressed: () async{
@@ -164,6 +169,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           children: <Widget>[
             // Switch out 2 lines below to play with TableCalendar's settings
             //-----------------------
+            // Builds the calendar in the body of our main screen
             _buildTableCalendar(
             ),
             // _buildTableCalendarWithBuilders(),
@@ -173,6 +179,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             Expanded(child: _buildEventList()),
           ],
         ),
+        // Author: Timothy Nkata
+        // Add button in bottom right of screen, redirect to _showAddDialog
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: (){
@@ -183,7 +191,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         )
     );
   }
-//Recent update to add a class. By Timothy N.
+
+  // Author: Timothy Nkata
+  // Adds a class into the current selected date (assuming a title is given to the class)
   _showAddDialog() {
     showDialog(
         context: context,
@@ -196,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             FlatButton(
               child: Text("Add"),
               onPressed: (){
-                if(_eventController.text.isEmpty) return;
+                if(_eventController.text.isEmpty) return; // Returns the same event list if not class title is given
                 setState(() {
                   if(_events[_calendarController.selectedDay] != null){
                     _events[_calendarController.selectedDay].add(_eventController.text);
@@ -205,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     _events[_calendarController.selectedDay] = [_eventController.text];
                   }
                   _eventController.clear();
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Takes us back to the calendar once we have added a class
                 });
               },
             )
@@ -215,6 +225,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   }
 
+  // Author: Timothy Nkata
   // Simple TableCalendar configuration (using Styles)
   Widget _buildTableCalendar({Map<DateTime, List> events}) {
     return TableCalendar(
@@ -242,6 +253,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
@@ -334,6 +346,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Author: Timothy Nkata
+  // Builds the markers (little dots) to represent events associated with a given date
   Widget _buildEventsMarker(DateTime date, List events) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -359,7 +373,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-
+  // Builds markers for holidays, for later use
   Widget _buildHolidaysMarker() {
     return Icon(
       Icons.add_box,
@@ -368,6 +382,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Builds the daterange selection buttons
+  // Two weeks, month, week, set day to today
   Widget _buildButtons() {
     final dateTime = _events.keys.elementAt(_events.length - 2);
 
@@ -419,6 +435,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
+  // Builds a list of events underneath the calendar
+  // Generated only for the current select day
   Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
@@ -436,6 +454,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             onPressed: () async{
               final confirm = await showDialog(
                 context: context,
+                // Here's where we moved the delete button to, by putting it here we now have
+                // A delete button associated with each event on the current event list showing
                 builder: (context) => AlertDialog(
                   title: Text("Warning"),
                   content: Text("This class will be deleted forever. Are you sure?"),
@@ -443,13 +463,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     TextButton(
                       onPressed: () {
                         setState(() {
+                          // Removes the associated event from the selected days event list
                           _selectedEvents.removeAt(_selectedEvents.indexOf('$event'));
                         });
                         Navigator.pop(context, false);
                       },
                       child: Text("Delete"),
                     ),
-                    TextButton(
+                    TextButton( // Option to cancel and not delete anything if you accidentally pressed delete
                       onPressed: () => Navigator.pop(context, false),
                       child: Text("Cancel", style: TextStyle(color: Colors.grey.shade700),),
                     ),
@@ -462,6 +483,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               }
             },
           ),
+          // Author: Nathan Fenske
+          // Redirects the user to the ClassScreen defined in class_display.dart when they
+          // tap on an event in the event list. The title for this screen will be set to the
+          // name of this event
           onTap: () {
             print('$event tapped');
             Navigator.of(context).push(

@@ -5,6 +5,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+// Eventually this will be loading in the Firebase database for cross-device synchronization
+// But that's a lot of trouble for right now
 //final firebaseInstance = FirebaseFirestore.instance;
 
 // retrieved from the FirebaseUser
@@ -14,6 +16,9 @@ String imageUrl;
 
 // Author: Nathan Fenske
 // Implements signing into Google via the Firebase module
+// Much of this code comes from Google themselves for how to actually implement google sign-in/sign-out
+// I've never worked with Firebase/google login before, so if I were to try to code all of this myself without reference
+// It would be a buggy nightmare or at the very least horribly inefficient
 Future<String> signInWithGoogle() async {
   await Firebase.initializeApp();
 
@@ -25,7 +30,9 @@ Future<String> signInWithGoogle() async {
     idToken: googleSignInAuthentication.idToken,
   );
 
+  // Sign-in/authorize the user
   final UserCredential authResult = await _auth.signInWithCredential(credential);
+  // Get the data (as an object) for our user
   final User user = authResult.user;
 
   if (user != null) {

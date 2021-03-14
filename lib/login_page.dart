@@ -104,9 +104,9 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150),
+              FlutterLogo(size: 150), // Flutter logo, we can change this later if we want to
               SizedBox(height: 50),
-              _signInButton(),
+              _signInButton(), // Sign-in button for google
             ],
           ),
         ),
@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
       splashColor: Colors.grey,
       onPressed: () {
         signInWithGoogle().then((result) {
-          if (result != null) {
+          if (result != null) { // If we sign in successfully, then we can move on to the main calendar view
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
