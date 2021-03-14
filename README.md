@@ -1,16 +1,17 @@
 # fb_auth
 
-A new Flutter application.
+An in-progress Flutter Android application which will allow university students to easily manage their classes
+in a calendar application centered around college life. Special feature *will* include options to add external links like Zoom classes,
+notifications for when a class or call is upcoming, and the ability to add office hours.
 
-## Getting Started
+All of the code which we actually wrote for this project (i.e. not generated simply by creating a new flutter app) are contained inside
+of the lib folder. If you are unfamiliar with the structure of Flutter applications, main.dart will be the file to go to if you want to
+see the main screen/code for this application.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Authors
+Nathan Fenske
+Timothy Nkata
+Konstantinos Chrysoulous
+Gaeun Lee
+Kelvin Chen
+Jonathan Deiss
