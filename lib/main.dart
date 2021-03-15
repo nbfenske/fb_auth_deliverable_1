@@ -16,7 +16,7 @@ final Map<DateTime, List> _holidays = {
   DateTime(2021, 4, 22): ['Easter Monday'],
   DateTime(2021, 5, 16): ['End of semester'],
 };
-
+Map<DateTime, List> _events;
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
@@ -47,7 +47,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  Map<DateTime, List> _events;
+
   TextEditingController _eventController;
   List _selectedEvents;
   AnimationController _animationController;
@@ -431,6 +431,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             );
           },
         ),
+        // Overview Button created by Konstatninos
+        RaisedButton(
+          child: Text('Overview'),
+          onPressed:(){
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => OverviewPage()),
+            );
+          },
+        ),
       ],
     );
   }
@@ -502,4 +511,59 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           .toList(),
     );
   }
+}
+
+//New class is created in order to navigate to a new window (Konstantinos)
+class OverviewPage extends StatelessWidget{
+
+
+  Widget build(BuildContext context) {
+    final title = 'Classes';
+
+    return MaterialApp(
+      title: title,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body:
+
+        ListView(
+          children: <Widget>[
+            ListTile(
+              leading: Icon(Icons.class_),
+              title: Text('Physics I'),
+            ),
+            ListTile(
+              leading: Icon(Icons.class_),
+              title: Text('Calculus III'),
+            ),
+            ListTile(
+              leading: Icon(Icons.class_),
+              title: Text('Intro to Psychology'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+// Widget build(BuildContext context) {
+//   return Scaffold(
+//     appBar: AppBar(
+//       title: Text("Overview"),
+//     ),
+//     body: Center(
+//       child: ElevatedButton(
+//         onPressed: () {
+//           Navigator.pop(context);
+//         },
+//         child: Text('Back to schedule'),
+//       ),
+//     ),
+//   );
+// }
+
 }

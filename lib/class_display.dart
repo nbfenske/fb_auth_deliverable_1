@@ -23,6 +23,15 @@ class ClassScreen extends StatefulWidget {
 // Author: Nathan Fenske
 // Still the representation of the class on-tap screen, just defines the state/structure
 class _ClassScreen extends State<ClassScreen> {
+  var _nameProf;
+  var _nameTA ;
+  var _officeHours;
+
+
+  final nameConProf = new TextEditingController();
+  final nameCon = new TextEditingController();
+  final officeCon = new TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +46,42 @@ class _ClassScreen extends State<ClassScreen> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title), // Title set to the given class/event
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextField(
+                controller: nameConProf,
+                decoration: InputDecoration(
+                    hintText: 'Enter Professor Name'
+                ),
+              ),
+              TextField(
+                controller: nameCon,
+                decoration: InputDecoration(
+                    hintText: 'Enter TA Name'
+                ),
+              ),
+              TextField(
+                controller: officeCon,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    hintText: 'Enter Office Hours'
+                ),
+              ),
+              RaisedButton(onPressed: (){
+                setState(() {
+                  _nameTA = nameCon.text;
+                });
+              },
+                child: Text('Submit'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
