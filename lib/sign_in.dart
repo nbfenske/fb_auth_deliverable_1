@@ -65,6 +65,7 @@ Future<String> signInWithGoogle() async {
 
     // testing mysql request, grabs all rows for this user
     var results = await conn.query('select userID, class from users where userID = ?', [user_id]);
+    // grabs and prints all ID/class name entries for this user
     for (var row in results) {
       print('Name: ${row[0]}, email: ${row[1]}');
     };

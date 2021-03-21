@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'sign_in.dart';
+import 'package:mysql1/mysql1.dart' as sql;
 
+import 'sign_in.dart';
 import 'login_page.dart';
 import 'class_display.dart';
 
@@ -16,6 +17,14 @@ final Map<DateTime, List> _holidays = {
   DateTime(2021, 4, 22): ['Easter Monday'],
   DateTime(2021, 5, 16): ['End of semester'],
 };
+var conn;
+var settings = new sql.ConnectionSettings(
+    host: 'sql5.freesqldatabase.com',
+    port: 3306,
+    user: 'sql5399694',
+    password: '4k6zvHCLMV',
+    db: 'sql5399694'
+);
 Map<DateTime, List> _events;
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -44,6 +53,11 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
+}
+
+addClass(year, month, day, className) async {
+  conn = await sql.MySqlConnection.connect(settings);
+  var result = await conn.query('insert into users (userID, class, year, month, day) values (?, ?, ?, ?, ?)', [user_id, className, year, month, day]);
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
@@ -214,6 +228,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   } else {
                     _events[_calendarController.selectedDay] = [_eventController.text];
                   }
+                  addClass(_calendarController.selectedDay.year, _calendarController.selectedDay.month, _calendarController.selectedDay.day, _eventController.text);
                   _eventController.clear();
                   Navigator.pop(context); // Takes us back to the calendar once we have added a class
                 });
