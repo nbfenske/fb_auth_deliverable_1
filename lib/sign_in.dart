@@ -2,6 +2,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mysql1/mysql1.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -13,7 +14,7 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 String name;
 String email;
 String imageUrl;
-
+String user_id;
 // Author: Nathan Fenske
 // Implements signing into Google via the Firebase module
 // Much of this code comes from Google themselves for how to actually implement google sign-in/sign-out
@@ -35,6 +36,16 @@ Future<String> signInWithGoogle() async {
   // Get the data (as an object) for our user
   final User user = authResult.user;
 
+  // connect to our mysql database
+  var settings = new ConnectionSettings(
+      host: 'sql5.freesqldatabase.com',
+      port: 3306,
+      user: 'sql5399694',
+      password: '4k6zvHCLMV',
+      db: 'sql5399694'
+  );
+  var conn = await MySqlConnection.connect(settings);
+
   if (user != null) {
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
@@ -49,6 +60,15 @@ Future<String> signInWithGoogle() async {
     name = user.displayName;
     email = user.email;
     imageUrl = user.photoURL;
+    user_id = user.uid;
+    print(user_id);
+
+    // testing mysql request, grabs all rows for this user
+    var results = await conn.query('select userID, class from users where userID = ?', [user_id]);
+    for (var row in results) {
+      print('Name: ${row[0]}, email: ${row[1]}');
+    };
+
     // Grab the first name
     if (name.contains(" ")) {
       name = name.substring(0, name.indexOf(" "));

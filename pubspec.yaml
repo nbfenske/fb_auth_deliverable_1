@@ -33,6 +33,7 @@ dependencies:
   google_sign_in: ^4.5.3
   flutter_calendar_carousel: ^1.5.2
   table_calendar: ^2.3.3
+  mysql1: ^0.17.0
 
 dev_dependencies:
   flutter_test:
