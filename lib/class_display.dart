@@ -22,7 +22,7 @@ class ClassScreen extends StatefulWidget {
   _ClassScreen createState() => _ClassScreen();
 }
 
-// Author: Nathan Fenske
+// Author: Kelvin Chen
 // Still the representation of the class on-tap screen, just defines the state/structure
 class _ClassScreen extends State<ClassScreen> {
   var _nameProf;
