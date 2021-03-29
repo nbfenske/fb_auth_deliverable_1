@@ -6,6 +6,7 @@ import 'package:mysql1/mysql1.dart' as sql;
 import 'sign_in.dart';
 import 'login_page.dart';
 import 'class_display.dart';
+import 'notification_plugin.dart';
 
 // Author: Timothy Nkata
 // Holidays for later use
@@ -17,6 +18,9 @@ final Map<DateTime, List> _holidays = {
   DateTime(2021, 4, 22): ['Easter Monday'],
   DateTime(2021, 5, 16): ['End of semester'],
 };
+
+// Author: Nathan Fenske + Timothy Nkata
+// info to establish connection to external user database later
 var conn;
 var settings = new sql.ConnectionSettings(
     host: 'sql5.freesqldatabase.com',
@@ -25,6 +29,7 @@ var settings = new sql.ConnectionSettings(
     password: '4k6zvHCLMV',
     db: 'sql5399694'
 );
+
 Map<DateTime, List> _events;
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -55,9 +60,30 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+// Author: Nathan Fenske + Timothy Nkata
+// adds class information into our external user database
 addClass(year, month, day, className) async {
   conn = await sql.MySqlConnection.connect(settings);
   var result = await conn.query('insert into users (userID, class, year, month, day) values (?, ?, ?, ?, ?)', [user_id, className, year, month, day]);
+}
+
+// Author: Nathan Fenske
+// Collects all the classes with a date currently assigned to it (meaning it occurs) for the
+// current user and updates the passed map to have those date/class values.
+loadClasses(map) async {
+  conn = await sql.MySqlConnection.connect(settings);
+  var results = await conn.query('select userID, class, year, month, day from users where userID = ?', [user_id]);
+  // grabs and prints all ID/class name entries for this user
+  for (var row in results) {
+    print('Name: ${row[0]}, email: ${row[1]}, Y:${row[2]}, M:${row[3]}, D:${row[4]}');
+    if (!(row[2] == 0 || row[3] == 0 || row[4] == 0 )){
+      if(map[DateTime(row[2], row[3], row[4])] != null) {
+        map[DateTime(row[2], row[3], row[4])].add(row[1]);
+      } else {
+        map[DateTime(row[2], row[3], row[4])]= [row[1]];
+      }
+    }
+  };
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
@@ -69,22 +95,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
-    _eventController = TextEditingController();
-    final _selectedDay = DateTime.now();
-
-
     _events = {
       /*_selectedDay.add(Duration(days: 1)): [
         'Class 1',
         'Class 2',
         'Class 3'
       ],*/
-      DateTime.utc(2021, 12, 25): ['Christmas'],
-      DateTime.utc(2021, 12, 25).subtract(Duration(days: 1)): ['Christmas Eve'],
+      //DateTime.utc(2021, 12, 25): ['Christmas'],
+      //DateTime.utc(2021, 12, 25).subtract(Duration(days: 1)): ['Christmas Eve'],
       /*_selectedDay: ['Class A7', 'Class B7', 'Class C7', 'Class D7'],*/
 
     };
+    // Author: Nathan Fenske
+    // This line below updates the current _events map to contain entries from the database
+    loadClasses(_events);
+    super.initState();
+    _eventController = TextEditingController();
+    final _selectedDay = DateTime.now();
+
+
+
 
     _selectedEvents = [];
     _calendarController = CalendarController();
@@ -184,9 +214,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             // Switch out 2 lines below to play with TableCalendar's settings
             //-----------------------
             // Builds the calendar in the body of our main screen
-            _buildTableCalendar(
-            ),
-            // _buildTableCalendarWithBuilders(),
+            //_buildTableCalendar(
+            //),
+            _buildTableCalendarWithBuilders(),
             const SizedBox(height: 8.0),
             _buildButtons(),
             const SizedBox(height: 8.0),
@@ -219,7 +249,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           actions: <Widget>[
             FlatButton(
               child: Text("Add"),
-              onPressed: (){
+              onPressed: () async{
+                // await notificationPlugin.showNotification();
                 if(_eventController.text.isEmpty) return; // Returns the same event list if not class title is given
                 setState(() {
                   if(_events[_calendarController.selectedDay] != null){
@@ -228,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   } else {
                     _events[_calendarController.selectedDay] = [_eventController.text];
                   }
+                  // add class information to the user database
                   addClass(_calendarController.selectedDay.year, _calendarController.selectedDay.month, _calendarController.selectedDay.day, _eventController.text);
                   _eventController.clear();
                   Navigator.pop(context); // Takes us back to the calendar once we have added a class
@@ -272,7 +304,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // More advanced TableCalendar configuration (using Builders & Styles)
   Widget _buildTableCalendarWithBuilders() {
     return TableCalendar(
-      locale: 'pl_PL',
+      locale: 'en_US',
       calendarController: _calendarController,
       events: _events,
       holidays: _holidays,
@@ -400,7 +432,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // Builds the daterange selection buttons
   // Two weeks, month, week, set day to today
   Widget _buildButtons() {
-    final dateTime = _events.keys.elementAt(_events.length - 2);
+    final dateTime = DateTime.now();
 
     return Column(
       children: <Widget>[
@@ -438,7 +470,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         const SizedBox(height: 8.0),
         RaisedButton(
           child: Text(
-              'Set day ${dateTime.day}-${dateTime.month}-${dateTime.year}'),
+              'Refresh/Load In Your Classes'),
           onPressed: () {
             _calendarController.setSelectedDay(
               DateTime(dateTime.year, dateTime.month, dateTime.day),
@@ -541,25 +573,55 @@ class OverviewPage extends StatelessWidget{
         appBar: AppBar(
           title: Text(title),
         ),
-        body:
-
-        ListView(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.class_),
-              title: Text('Physics I'),
-            ),
-            ListTile(
-              leading: Icon(Icons.class_),
-              title: Text('Calculus III'),
-            ),
-            ListTile(
-              leading: Icon(Icons.class_),
-              title: Text('Intro to Psychology'),
-            ),
+            const SizedBox(height: 8.0),
+            Expanded(child: _buildClassList(context)),
           ],
         ),
       ),
+    );
+  }
+
+  // Author: Nathan Fenske
+  // A near carbon-copy of the buildEventList function, repurposed to display the
+  // overall list of classes in the Overview page as opposed to just
+  Widget _buildClassList(BuildContext context) {
+    print(_events.values);
+    List<dynamic> listClasses = <dynamic>[];
+    for (var i = 0; i < _events.values.length; i++){
+      listClasses.addAll(_events.values.elementAt(i));
+    }
+    print(listClasses);
+    return ListView(
+      children: listClasses
+          .map((event) => Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.8),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        margin:
+        const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: ListTile(
+          title: Text(event.toString()),
+          // Author: Nathan Fenske
+          // Redirects the user to the ClassScreen defined in class_display.dart when they
+          // tap on an event in the event list. The title for this screen will be set to the
+          // name of this event
+          onTap: () {
+            print('$event tapped');
+            Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ClassScreen(title: '$event');
+                  },
+                )
+            );
+          },
+        ),
+      ))
+          .toList(),
     );
   }
 

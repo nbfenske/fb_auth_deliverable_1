@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // Author: Nathan Fenske
 // This is the class to represent the screen opened after clicking on an event/class
@@ -26,11 +28,17 @@ class _ClassScreen extends State<ClassScreen> {
   var _nameProf;
   var _nameTA ;
   var _officeHours;
+  // Author: Konstantinos Chrysolous
+  // Did the zoom entry
+  var _zoomLink;
 
 
   final nameConProf = new TextEditingController();
   final nameCon = new TextEditingController();
   final officeCon = new TextEditingController();
+  // Author: Konstantinos Chrysolous
+  // Did the zoom entry
+  final zoomCon = new TextEditingController();
 
 
   @override
@@ -72,9 +80,34 @@ class _ClassScreen extends State<ClassScreen> {
                     hintText: 'Enter Office Hours'
                 ),
               ),
+              // Author: Konstantinos Chrysolous
+              // Did the zoom entry
+              TextField(// Entry field where user enters the selected class' Zoom Link
+                controller: zoomCon,
+                decoration: InputDecoration(
+                    hintText: 'Enter class Zoom Link'
+                ),
+              ),
               RaisedButton(onPressed: (){
+
                 setState(() {
-                  _nameTA = nameCon.text;
+                  if (nameCon.text != "") {
+                    _nameTA = nameCon.text;
+                  }
+                  if (nameConProf.text != "") {
+                    _nameProf = nameConProf.text;
+                  }
+                  if (officeCon.text != "") {
+                    _officeHours = officeCon.text;
+                  }
+                  // Author: Konstantinos Chrysolous
+                  // Did the zoom entry
+                  if (zoomCon.text != "") {
+                    _zoomLink = zoomCon.text;
+                    print(_zoomLink);
+                  } else {
+                    print("Empty");
+                  }
                 });
               },
                 child: Text('Submit'),
