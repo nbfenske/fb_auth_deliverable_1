@@ -67,6 +67,13 @@ addClass(year, month, day, className) async {
   var result = await conn.query('insert into users (userID, class, year, month, day) values (?, ?, ?, ?, ?)', [user_id, className, year, month, day]);
 }
 
+// Author: Nathan Fenske + Timothy Nkata
+// removes class information into our external user database
+removeClass(className) async {
+  conn = await sql.MySqlConnection.connect(settings);
+  var result = await conn.query('delete from users where userID = ? and class = ?', [user_id, className]);
+}
+
 // Author: Nathan Fenske
 // Collects all the classes with a date currently assigned to it (meaning it occurs) for the
 // current user and updates the passed map to have those date/class values.
@@ -250,7 +257,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             FlatButton(
               child: Text("Add"),
               onPressed: () async{
-                // await notificationPlugin.showNotification();
+                await notificationPlugin.showNotification();
                 if(_eventController.text.isEmpty) return; // Returns the same event list if not class title is given
                 setState(() {
                   if(_events[_calendarController.selectedDay] != null){
@@ -470,7 +477,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         const SizedBox(height: 8.0),
         RaisedButton(
           child: Text(
-              'Refresh/Load In Your Classes'),
+              'Refresh/Load Classes'),
           onPressed: () {
             _calendarController.setSelectedDay(
               DateTime(dateTime.year, dateTime.month, dateTime.day),
@@ -517,12 +524,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   content: Text("This class will be deleted forever. Are you sure?"),
                   actions: [
                     TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         setState(() {
                           // Removes the associated event from the selected days event list
+                          removeClass('$event');
                           _selectedEvents.removeAt(_selectedEvents.indexOf('$event'));
                         });
-                        Navigator.pop(context, false);
+                        Navigator.pop(context);
                       },
                       child: Text("Delete"),
                     ),
